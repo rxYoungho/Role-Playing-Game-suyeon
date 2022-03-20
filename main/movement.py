@@ -11,7 +11,12 @@ x = 50
 y = 50
 width = 40
 height = 60
-velocity = 5
+velocity = 10
+
+isJump = False
+jumpCount = 10
+
+slide = 80
 
 run = True
 while run:
@@ -22,16 +27,32 @@ while run:
             run = False
     
     keys = pygame.key.get_pressed()
-    print(keys)
 
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] and x > velocity:
         x -= velocity
-    if keys[pygame.K_RIGHT]:
+
+    if keys[pygame.K_RIGHT] and x < 500 - velocity - width:
         x += velocity
-    if keys[pygame.K_UP]:
-        y -= velocity
-    if keys[pygame.K_DOWN]:
-        y += velocity
+
+    if keys[pygame.K_LCTRL] and x < 500 - slide - width:
+        x += slide
+
+    if not(isJump):
+        if keys[pygame.K_UP] and y > velocity:
+            y -= velocity
+        
+        if keys[pygame.K_DOWN] and y < 500 - velocity - height:
+            y += velocity
+
+        if keys[pygame.K_SPACE]:
+            isJump = True
+    else:
+        if jumpCount >= -10:
+            y -= (jumpCount * abs(jumpCount)) * 0.3
+            jumpCount -= 1
+        else:
+            jumpCount = 10
+            isJump = False
 
     win.fill((0,0,0))
     pygame.draw.rect(win, (255,0,0), (x, y, width, height))
